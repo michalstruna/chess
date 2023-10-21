@@ -1,7 +1,9 @@
+import Board from "@/components/board";
+
 const Home = () => {
 	return (
 		<main>
-			HomePage
+			<Board />
 		</main>
 	)
 }
