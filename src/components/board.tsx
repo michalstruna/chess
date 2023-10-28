@@ -2,32 +2,38 @@
 
 import Field from "@/components/field"
 import { BoardContext } from "@/hooks/useBoardContext"
-import { FieldCoordinate } from "@/types/board"
+import BoardModel from "@/model/board"
+import Piece from "@/model/pieces/piece"
+import { Coordinates } from "@/types/game"
 import { useState } from "react"
 import styles from "./board.module.scss"
 
 export type BoardProps = {
-
+	model: BoardModel
 }
 
-const SIZE = 8
-
 const Board = (props: BoardProps) => {
-	const { } = props
+	const { model } = props
 
-	const [highlights, setHighlights] = useState<FieldCoordinate[]>([]);
+	const [highlights, setHighlights] = useState<Coordinates[]>([])
+	const [selection, setSelection] = useState<Piece | null>(null)
 
 	const boardContext = {
 		highlights,
-		setHighlights
+		setHighlights,
+		selection,
+		setSelection
 	}
 
 	return (
 		<BoardContext.Provider value={boardContext}>
-			<div className={styles.root}>
-				{Array.from({ length: SIZE }).map((_, i) => (
-					Array.from({ length: SIZE }).map((_, j) => {
-						const index = i * SIZE + j
+			<div className={styles.root} style={{
+				gridTemplateColumns: `repeat(${model.size}, 1fr)`,
+				gridTemplateRows: `repeat(${model.size}, 1fr)`
+			}}>
+				{model.matrix.map((_, i) => (
+					model.matrix[i].map((_, j) => {
+						const index = i * model.size + j
 
 						return (
 							<Field
@@ -36,8 +42,8 @@ const Board = (props: BoardProps) => {
 									gridColumn: i + 1,
 									gridRow: j + 1
 								}}
-								column={i}
-								row={j}
+								coordinates={[i, j]}
+								piece={model.matrix[i][j]}
 							/>
 						)
 					})

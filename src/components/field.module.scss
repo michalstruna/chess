@@ -1,16 +1,48 @@
 .root {
 	position: relative;
 
+	&:after {
+		content: "";
+		height: 100%;
+		opacity: 0.5;
+		left: 0;
+		position: absolute;
+		top: 0;
+		width: 100%;
+		z-index: 0;
+	}
+
 	&--highlighted {
 		&:after {
 			background-color: red;
-			content: "";
-			height: 100%;
-			left: 0;
-			opacity: 0.5;
-			position: absolute;
-			top: 0;
-			width: 100%;
 		}
 	}
+
+	&--selected {
+		&:after {
+			background-color: grey;
+		}
+	}
+
+	&--move {
+		&:after {
+			background-color: darkgray;
+			border-radius: 100%;
+			left: 50%;
+			height: 30%;
+			top: 50%;
+			transform: translate(-50%, -50%);
+			width: 30%;
+		}
+	}
+}
+
+.inner {
+	align-items: center;
+	display: flex;
+	font-size: 200%;
+	height: 100%;
+	justify-content: center;
+	position: relative;
+	z-index: 1;
 }
