@@ -2,6 +2,7 @@
 
 import Board from "@/components/board";
 import BoardModel from "@/model/board";
+import Bishop from "@/model/pieces/bishop";
 import King from "@/model/pieces/king";
 import Rook from "@/model/pieces/rook";
 import Player from "@/model/player";
@@ -22,6 +23,10 @@ const Home = () => {
 		new Rook({ board, coordinates: [0, 7], player: player2 });
 		new Rook({ board, coordinates: [7, 0], player: player1 });
 		new Rook({ board, coordinates: [7, 7], player: player2 });
+		new Bishop({ board, coordinates: [2, 0], player: player1 });
+		new Bishop({ board, coordinates: [2, 7], player: player2 });
+		new Bishop({ board, coordinates: [5, 0], player: player1 });
+		new Bishop({ board, coordinates: [5, 7], player: player2 });
 		new King({ board, coordinates: [3, 0], player: player1 });
 		new King({ board, coordinates: [3, 7], player: player2 });
 

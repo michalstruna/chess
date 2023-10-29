@@ -11,21 +11,22 @@ export default class Rook extends Piece {
 	
 	public get moves(): Coordinates[] {
 		const expanded: Coordinates[] = []
+		const [rank, file] = this.coordinates
 
-		for (let i = this.coordinates[0] + 1; i < this.board.size; i++) {
-			if (!this.expandField([i, this.coordinates[1]], expanded)) break
+		for (let i = 1; i < this.board.size - rank; i++) {
+			if (!this.expandField([rank + i, file], expanded)) break
 		}
 
-		for (let i = this.coordinates[0] - 1; i >= 0; i--) {
-			if (!this.expandField([i, this.coordinates[1]], expanded)) break
+		for (let i = 1; i < this.board.size - file; i++) {
+			if (!this.expandField([rank, file + i], expanded)) break
 		}
 
-		for (let i = this.coordinates[1] + 1; i < this.board.size; i++) {
-			if (!this.expandField([this.coordinates[0], i], expanded)) break
+		for (let i = 1; i <= rank; i++) {
+			if (!this.expandField([rank - i, file], expanded)) break
 		}
 
-		for (let i = this.coordinates[1] - 1; i >= 0; i--) {
-			if (!this.expandField([this.coordinates[0], i], expanded)) break
+		for (let i = 1; i <= file; i++) {
+			if (!this.expandField([rank, file - i], expanded)) break
 		}
 
 		return expanded
