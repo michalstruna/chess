@@ -18,10 +18,12 @@ const Home = () => {
 			size: 8
 		})
 
-		new Rook({ board, coordinates: [2, 2], player: player1 });
-		new Rook({ board, coordinates: [2, 6], player: player2 });
-		new King({ board, coordinates: [6, 2], player: player1 });
-		new King({ board, coordinates: [6, 6], player: player2 });
+		new Rook({ board, coordinates: [0, 0], player: player1 });
+		new Rook({ board, coordinates: [0, 7], player: player2 });
+		new Rook({ board, coordinates: [7, 0], player: player1 });
+		new Rook({ board, coordinates: [7, 7], player: player2 });
+		new King({ board, coordinates: [3, 0], player: player1 });
+		new King({ board, coordinates: [3, 7], player: player2 });
 
 		return { boardModel: board }
 	}, [])
