@@ -5,6 +5,7 @@ import { StylableProps } from "@/types/props"
 import { isSameCoordinates } from "@/utils/game"
 import { mergeProps } from "@/utils/props"
 import c from "classnames"
+import Image from "next/image"
 import { MouseEvent, useCallback } from "react"
 import styles from "./field.module.scss"
 
@@ -28,28 +29,41 @@ const Field = (props: FieldProps) => {
 	}, [id, setHighlights, setSelection])
 
 	const handleClick = useCallback(() => {
-		if (selection?.canMove(coordinates)) selection?.move(coordinates)
+		const canSelectionMove = selection?.canMove(coordinates)
+
+		if (canSelectionMove) {
+			selection?.move(coordinates)
+			setSelection(null)
+		} else {
+			setSelection(piece || null)
+		}
+
 		setHighlights([])
-		setSelection(piece || null)
 	}, [coordinates, piece, selection, setHighlights, setSelection])
+
+	const isMove = selection && selection.moves.some(move => isSameCoordinates(move, coordinates))
+	const isCapture = isMove && piece
 
 	return (
 		<div
 			{...mergeProps(
 				props,
-				{ className: c(styles.root, {
-					[styles["root--highlighted"]]: isHighlighted,
-					[styles["root--selected"]]: selection && selection === piece,
-					[styles["root--move"]]: selection && selection.moves.some(move => isSameCoordinates(move, coordinates))
-				}), style: { backgroundColor } })}
+				{
+					className: c(styles.root, {
+						[styles["root--highlighted"]]: isHighlighted,
+						[styles["root--selected"]]: selection && selection === piece,
+						[styles["root--move"]]: isMove && !isCapture,
+						[styles["root--capture"]]: isCapture,
+					}), style: { backgroundColor }
+				})}
 			onContextMenu={handleContextMenu}
 			onClick={handleClick}
 		>
-			<div className={styles.inner}>
-				{piece && (
-					piece.symbol
-				)}
-			</div>
+			{piece && (
+				<div className={styles.inner}>
+					<Image src={piece.icon} alt={piece.symbol} className={styles.icon} />
+				</div>
+			)}
 		</div>
 	)
 }

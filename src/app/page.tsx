@@ -2,21 +2,33 @@
 
 import Board from "@/components/board";
 import BoardModel from "@/model/board";
+import King from "@/model/pieces/king";
 import Rook from "@/model/pieces/rook";
-import { useRef } from "react";
+import Player from "@/model/player";
+import { useMemo } from "react";
 
 const Home = () => {
-	const boardModelRef = useRef(new BoardModel({
-		players: [],
-		size: 8
-	}))
+	const { boardModel } = useMemo(() => {
 
-	new Rook({ board: boardModelRef.current, coordinates: [3, 1], player: null });
-	new Rook({ board: boardModelRef.current, coordinates: [3, 2], player: null });
+		const player1 = new Player({ color: "light", user: null })
+		const player2 = new Player({ color: "dark", user: null })
+
+		const board = new BoardModel({
+			players: [player1, player2],
+			size: 8
+		})
+
+		new Rook({ board, coordinates: [2, 2], player: player1 });
+		new Rook({ board, coordinates: [2, 6], player: player2 });
+		new King({ board, coordinates: [6, 2], player: player1 });
+		new King({ board, coordinates: [6, 6], player: player2 });
+
+		return { boardModel: board }
+	}, [])
 
 	return (
 		<main>
-			<Board model={boardModelRef.current} />
+			<Board model={boardModel} />
 		</main>
 	)
 }
