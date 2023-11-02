@@ -5,6 +5,7 @@ import BoardModel from "@/model/board";
 import Bishop from "@/model/pieces/bishop";
 import King from "@/model/pieces/king";
 import Pawn from "@/model/pieces/pawn";
+import Queen from "@/model/pieces/queen";
 import Rook from "@/model/pieces/rook";
 import Player from "@/model/player";
 import { useMemo } from "react";
@@ -30,6 +31,8 @@ const Home = () => {
 		new Bishop({ board, coordinates: [5, 7], player: player2 });
 		new King({ board, coordinates: [3, 0], player: player1 });
 		new King({ board, coordinates: [3, 7], player: player2 });
+		new Queen({ board, coordinates: [4, 0], player: player1 });
+		new Queen({ board, coordinates: [4, 7], player: player2 });
 
 		for (let i = 0; i < board.size; i++) {
 			new Pawn({ board, coordinates: [i, 1], player: player1 })
