@@ -1,12 +1,12 @@
 import { Coordinates } from "../../types/game";
 import lightIcon from "./pawn-light.svg";
 import darkIcon from "./pawn.svg";
-import Piece, { AbstractPieceOptions } from "./piece";
+import Piece, { PieceOptions } from "./piece";
 
 export default class Pawn extends Piece {
 
-	public constructor(options: AbstractPieceOptions) {
-		super({ ...options, icon: options.player.color === "dark" ? darkIcon : lightIcon, symbol: "" })
+	public constructor(options: PieceOptions) {
+		super({ ...options, icon: options.player.color === "dark" ? darkIcon : lightIcon, symbol: "", value: 1 })
 	}
 	
 	public get moves(): Coordinates[] {

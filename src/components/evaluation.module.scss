@@ -1,0 +1,20 @@
+.root {
+	background: #DDD;
+	display: flex;
+	height: 100%;
+	position: relative;
+	width: 1.5rem;
+}
+
+.bar {
+	background: #222;
+	transition: height 0.5s;
+	width: 100%;
+}
+
+.value {
+	font-size: 80%;
+	position: absolute;
+	text-align: center;
+	width: 100%;
+}

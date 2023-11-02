@@ -1,12 +1,12 @@
 import { Coordinates } from "../../types/game";
 import lightIcon from "./bishop-light.svg";
 import darkIcon from "./bishop.svg";
-import Piece, { AbstractPieceOptions } from "./piece";
+import Piece, { PieceOptions } from "./piece";
 
 export default class Bishop extends Piece {
 
-	public constructor(options: AbstractPieceOptions) {
-		super({ ...options, icon: options.player.color === "dark" ? darkIcon : lightIcon, symbol: "B" })
+	public constructor(options: PieceOptions) {
+		super({ ...options, icon: options.player.color === "dark" ? darkIcon : lightIcon, symbol: "B", value: 3 })
 	}
 	
 	public get moves(): Coordinates[] {

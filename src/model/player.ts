@@ -1,4 +1,4 @@
-import { Color } from "../types/game";
+import { Color, Direction } from "../types/game";
 import User from "./user";
 
 export type PlayerOptions = {
@@ -10,7 +10,7 @@ export default class Player {
 
 	public readonly color: Color
 	public readonly user: User
-	public readonly direction: 1 | -1
+	public readonly direction: Direction
 
 	public constructor({ color, user }: PlayerOptions) {
 		this.color = color

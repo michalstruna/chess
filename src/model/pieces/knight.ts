@@ -1,14 +1,14 @@
 import { Coordinates } from "../../types/game";
 import lightIcon from "./knight-light.svg";
 import darkIcon from "./knight.svg";
-import Piece, { AbstractPieceOptions } from "./piece";
+import Piece, { PieceOptions } from "./piece";
 
 const CHANGES = [-2, -1, 1, 2]
 
 export default class Knight extends Piece {
 
-	public constructor(options: AbstractPieceOptions) {
-		super({ ...options, icon: options.player.color === "dark" ? darkIcon : lightIcon, symbol: "N" })
+	public constructor(options: PieceOptions) {
+		super({ ...options, icon: options.player.color === "dark" ? darkIcon : lightIcon, symbol: "N", value: 3 })
 	}
 	
 	public get moves(): Coordinates[] {

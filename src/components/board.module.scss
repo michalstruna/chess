@@ -1,6 +1,11 @@
 .root {
-	display: grid;
+	display: flex;
+	gap: 1rem;
 	height: calc(100vmin - 10rem);
-	width: calc(100vmin - 10rem);
+}
+
+.matrix {
+	display: grid;
 	user-select: none;
+	width: calc(100vmin - 10rem);
 }

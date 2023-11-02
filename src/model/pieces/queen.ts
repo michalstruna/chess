@@ -1,12 +1,12 @@
 import { Coordinates } from "../../types/game";
-import Piece, { AbstractPieceOptions } from "./piece";
+import Piece, { PieceOptions } from "./piece";
 import lightIcon from "./queen-light.svg";
 import darkIcon from "./queen.svg";
 
 export default class Queen extends Piece {
 
-	public constructor(options: AbstractPieceOptions) {
-		super({ ...options, icon: options.player.color === "dark" ? darkIcon : lightIcon, symbol: "Q" })
+	public constructor(options: PieceOptions) {
+		super({ ...options, icon: options.player.color === "dark" ? darkIcon : lightIcon, symbol: "Q", value: 9 })
 	}
 	
 	public get moves(): Coordinates[] {

@@ -1,12 +1,12 @@
 import { Coordinates } from "../../types/game";
-import Piece, { AbstractPieceOptions } from "./piece";
+import Piece, { PieceOptions } from "./piece";
 import lightIcon from "./rook-light.svg";
 import darkIcon from "./rook.svg";
 
 export default class Rook extends Piece {
 
-	public constructor(options: AbstractPieceOptions) {
-		super({ ...options, icon: options.player.color === "dark" ? darkIcon : lightIcon, symbol: "R" })
+	public constructor(options: PieceOptions) {
+		super({ ...options, icon: options.player.color === "dark" ? darkIcon : lightIcon, symbol: "R", value: 5 })
 	}
 	
 	public get moves(): Coordinates[] {

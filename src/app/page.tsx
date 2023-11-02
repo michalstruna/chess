@@ -49,7 +49,7 @@ const Home = () => {
 
 	return (
 		<main>
-			<Board model={boardModel} />
+			<Board model={boardModel} withEval={true} />
 		</main>
 	)
 }

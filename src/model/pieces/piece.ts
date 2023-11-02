@@ -3,14 +3,15 @@ import { Coordinates } from "../../types/game";
 import Board from "../board";
 import Player from "../player";
 
-export type AbstractPieceOptions = {
+export type PieceOptions = {
 	coordinates: Coordinates
 	player: Player
 	board: Board
 }
 
-export type PieceOptions = AbstractPieceOptions & {
+export type AbstractPieceOptions = PieceOptions & {
 	symbol: string
+	value: number
 	icon: any
 	isDirty?: boolean
 }
@@ -22,9 +23,10 @@ export default abstract class Piece {
 	public readonly player: Player
 	public readonly symbol: string
 	public readonly icon: any
+	public readonly value: number
 	private _isDirty: boolean
 
-	public constructor({ board, coordinates, icon, player, symbol, isDirty = false }: PieceOptions) {
+	public constructor({ board, coordinates, icon, player, symbol, isDirty = false, value }: AbstractPieceOptions) {
 		this.board = board
 		this._coordinates = coordinates
 		this.player = player
@@ -32,6 +34,7 @@ export default abstract class Piece {
 		this.icon = icon
 		this.move(coordinates)
 		this._isDirty = isDirty
+		this.value = value
 	}
 
 	public get coordinates(): Coordinates {

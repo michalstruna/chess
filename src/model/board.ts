@@ -29,6 +29,20 @@ export default class Board {
 		return true
 	}
 
+	public evaluate(): number {
+		let value = 0
+
+		this.matrix.forEach(file => {
+			file.forEach(rank => {
+				if (rank) {
+					value += rank.value * rank.player.direction
+				}
+			})
+		})
+
+		return value
+	}
+
 	private generateMatrix(): Matrix {
 		const rows: Matrix = []
 
