@@ -10,23 +10,23 @@ export default class Bishop extends Piece {
 	}
 	
 	public get moves(): Coordinates[] {
-		const [rank, file] = this.coordinates
+		const [file, rank] = this.coordinates
 		const expanded: Coordinates[] = []
 
-		for (let i = 1; i < this.board.size - Math.max(rank, file); i++) {
-			if (!this.expandField([rank + i, file + i], expanded)) break
+		for (let i = 1; i < this.board.size - Math.max(file, rank); i++) {
+			if (!this.expandField([file + i, rank + i], expanded)) break
 		}
 
 		for (let i = 1; i < this.board.size - Math.max(this.board.size - rank - 1, file); i++) {
-			if (!this.expandField([rank - i, file + i], expanded)) break
+			if (!this.expandField([file + i, rank - i], expanded)) break
 		}
 
-		for (let i = 1; i < this.board.size - Math.max(rank, this.board.size - file - 1); i++) {
-			if (!this.expandField([rank + i, file - i], expanded)) break
+		for (let i = 1; i < this.board.size - Math.max(this.board.size - file - 1, rank); i++) {
+			if (!this.expandField([file - i, rank + i], expanded)) break
 		}
 
 		for (let i = 1; i < this.board.size - Math.max(this.board.size - rank - 1, this.board.size - file - 1); i++) {
-			if (!this.expandField([rank - i, file - i], expanded)) break
+			if (!this.expandField([file - i, rank - i], expanded)) break
 		}
 
 		return expanded

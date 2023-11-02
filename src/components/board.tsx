@@ -31,19 +31,19 @@ const Board = (props: BoardProps) => {
 				gridTemplateColumns: `repeat(${model.size}, 1fr)`,
 				gridTemplateRows: `repeat(${model.size}, 1fr)`
 			}}>
-				{model.matrix.map((_, i) => (
-					model.matrix[i].map((_, j) => {
-						const index = i * model.size + j
+				{model.matrix.map((_, file) => (
+					model.matrix[file].map((_, rank) => {
+						const index = file * model.size + rank
 
 						return (
 							<Field
 								key={index}
 								style={{
-									gridColumn: i + 1,
-									gridRow: j + 1
+									gridColumn: model.players[0].direction === 1 ? (model.size - file) : file + 1,
+									gridRow: model.players[0].direction === 1 ? (model.size - rank) : rank + 1,
 								}}
-								coordinates={[i, j]}
-								piece={model.matrix[i][j]}
+								coordinates={[file, rank]}
+								piece={model.matrix[file][rank]}
 							/>
 						)
 					})
