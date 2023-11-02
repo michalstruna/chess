@@ -4,6 +4,7 @@ import Board from "@/components/board";
 import BoardModel from "@/model/board";
 import Bishop from "@/model/pieces/bishop";
 import King from "@/model/pieces/king";
+import Knight from "@/model/pieces/knight";
 import Pawn from "@/model/pieces/pawn";
 import Queen from "@/model/pieces/queen";
 import Rook from "@/model/pieces/rook";
@@ -33,6 +34,10 @@ const Home = () => {
 		new King({ board, coordinates: [3, 7], player: player2 });
 		new Queen({ board, coordinates: [4, 0], player: player1 });
 		new Queen({ board, coordinates: [4, 7], player: player2 });
+		new Knight({ board, coordinates: [1, 0], player: player1 });
+		new Knight({ board, coordinates: [1, 7], player: player2 });
+		new Knight({ board, coordinates: [6, 0], player: player1 });
+		new Knight({ board, coordinates: [6, 7], player: player2 });
 
 		for (let i = 0; i < board.size; i++) {
 			new Pawn({ board, coordinates: [i, 1], player: player1 })
