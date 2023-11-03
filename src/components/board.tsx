@@ -19,15 +19,21 @@ const Board = (props: BoardProps) => {
 
 	const [highlights, setHighlights] = useState<Coordinates[]>([])
 	const [selection, setSelection] = useState<Piece | null>(null)
+	const [currentPlayer, setCurrentPlayer] = useState(model.players[0])
+	const [perspectivePlayer, setPerspectivePlayer] = useState(model.players[0])
+
+	const switchCurrentPlayer = () => setCurrentPlayer(prev => prev === model.players[0] ? model.players[1] : model.players[0])
 
 	const boardContext = {
 		highlights,
 		setHighlights,
 		selection,
-		setSelection
+		setSelection,
+		currentPlayer,
+		switchCurrentPlayer,
+		perspectivePlayer,
+		setPerspectivePlayer
 	}
-
-	const currentPlayer = model.players[0]
 
 	return (
 		<BoardContext.Provider value={boardContext}>
@@ -44,8 +50,8 @@ const Board = (props: BoardProps) => {
 								<Field
 									key={index}
 									style={{
-										gridColumn: currentPlayer.direction === 1 ? (model.size - file) : file + 1,
-										gridRow: currentPlayer.direction === 1 ? (model.size - rank) : rank + 1,
+										gridColumn: perspectivePlayer.direction === 1 ? (model.size - file) : file + 1,
+										gridRow: perspectivePlayer.direction === 1 ? (model.size - rank) : rank + 1,
 									}}
 									coordinates={[file, rank]}
 									piece={model.matrix[file][rank]}
@@ -54,7 +60,7 @@ const Board = (props: BoardProps) => {
 						})
 					))}
 				</div>
-				{withEval && <Evaluation value={model.evaluate()} direction={currentPlayer.direction} />}
+				{withEval && <Evaluation value={model.evaluate()} direction={perspectivePlayer.direction} />}
 			</div>
 		</BoardContext.Provider>
 	)

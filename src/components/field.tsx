@@ -16,7 +16,7 @@ export type FieldProps = StylableProps & {
 
 const Field = (props: FieldProps) => {
 	const { coordinates, piece } = props
-	const { highlights, setHighlights, selection, setSelection } = useBoardContext()
+	const { highlights, setHighlights, selection, setSelection, currentPlayer, switchCurrentPlayer } = useBoardContext()
 	const id = `${coordinates[0]} ${coordinates[1]}`
 	const isHighlighted = highlights.includes(id)
 
@@ -29,17 +29,25 @@ const Field = (props: FieldProps) => {
 	}, [id, setHighlights, setSelection])
 
 	const handleClick = useCallback(() => {
-		const canSelectionMove = selection?.canMove(coordinates)
-
-		if (canSelectionMove) {
-			selection?.move(coordinates)
+		if (selection?.canMove(coordinates)) {
+			selection.move(coordinates)
+			switchCurrentPlayer()
 			setSelection(null)
+
 		} else {
-			setSelection(piece || null)
+			if (piece) {
+				if (piece.player === currentPlayer) {
+					setSelection(piece)
+				} else {
+					setSelection(null)
+				}
+			} else {
+				setSelection(null)
+			}
 		}
 
 		setHighlights([])
-	}, [coordinates, piece, selection, setHighlights, setSelection])
+	}, [coordinates, currentPlayer, piece, selection, setHighlights, setSelection, switchCurrentPlayer])
 
 	const isMove = selection && selection.moves.some(move => isSameCoordinates(move, coordinates))
 	const isCapture = isMove && piece
