@@ -37,5 +37,19 @@ export default class King extends Piece {
 
 		return expanded
 	}
+
+	public move(coordinates: Coordinates): void {
+		const [newFile] = coordinates
+		const [oldFile, oldRank] = this.coordinates
+
+		// Is castling, move also rook.
+		if (Math.abs(newFile - oldFile) > 1) {
+			const isLongCastle = newFile > oldFile
+			const rook = this.board.matrix[isLongCastle ? this.board.size - 1 : 0][oldRank] as Rook
+			rook.move([isLongCastle ? newFile - 1 : newFile + 1, oldRank])
+		}
+
+		super.move(coordinates)
+	}
 	
 }
