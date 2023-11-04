@@ -1,5 +1,4 @@
-import { Coordinates } from "../types/game";
-import Piece from "./pieces/piece";
+import { Coordinates, Field } from "../types/game";
 import Player from "./player";
 
 export type BoardOptions = {
@@ -7,7 +6,7 @@ export type BoardOptions = {
 	size: number
 }
 
-type Matrix = (Piece | null)[][]
+type Matrix = Field[][]
 
 export default class Board {
 	
