@@ -63,17 +63,12 @@ export default abstract class Piece {
 		if (!this.board.hasCoordinates(coordinates)) return false
 		const [file, rank] = coordinates
 		const piece = this.board.matrix[file][rank]
+		if (!piece && interaction === "attack") return false // Piece must attack other piece.
+		if (piece && interaction === "move") return false // Piece cań't attack other piece.
+		if (piece?.player === this.player) return false // User can't attack their own pieces.
 
-		if (piece) {
-			if (piece.player !== this.player) {
-				if (interaction === "move") return false
-				expanded.push(coordinates)
-			}
-
-			return false
-		}
-
-		if (interaction !== "attack") expanded.push(coordinates)
+		// if (this.board.isLegalMove(this.coordinates, coordinates))
+		expanded.push(coordinates)
 
 		return true
 	}
