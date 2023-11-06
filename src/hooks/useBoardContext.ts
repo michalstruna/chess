@@ -1,17 +1,19 @@
 import PieceModel from "@/model/pieces/piece";
 import Player from "@/model/player";
+import { Coordinates } from "@/types/game";
 import { Setter } from "@/types/general";
 import { createContext, useContext } from "react";
 
 export type BoardContextData = {
-	highlights: string[]
-	setHighlights: Setter<string[]>
+	highlights: Coordinates[]
+	setHighlights: Setter<Coordinates[]>
 	selection: PieceModel | null
 	setSelection: Setter<PieceModel | null>
 	perspectivePlayer: Player
 	switchCurrentPlayer: () => void
 	currentPlayer: Player
-	setCurrentPlayer: Setter<Player>
+	setPerspectivePlayer: Setter<Player>
+	selectionMoves: Coordinates[]
 }
 
 export const BoardContext = createContext<BoardContextData>({} as unknown as BoardContextData)

@@ -10,13 +10,13 @@ export default class King extends Piece {
 		super({ ...options, icon: options.player.color === "dark" ? darkIcon : lightIcon, symbol: "K", value: 1000 })
 	}
 	
-	public get moves(): Coordinates[] {
+	public getMoves(allowIllegal?: boolean): Coordinates[] {
 		const [file, rank] = this.coordinates
 		const expanded: Coordinates[] = []
 
 		for (let offsetI = -1; offsetI <= 1; offsetI++) {
 			for (let offsetJ = -1; offsetJ <= 1; offsetJ++) {
-				this.expandField([file + offsetI, rank + offsetJ], expanded)
+				this.expandField([file + offsetI, rank + offsetJ], expanded, allowIllegal)
 			}
 		}
 
@@ -33,7 +33,6 @@ export default class King extends Piece {
 		}
 
 		// TODO: Filter out check castling.
-		// TODO: Filter out check moves.
 
 		return expanded
 	}

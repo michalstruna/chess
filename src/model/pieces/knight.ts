@@ -11,14 +11,14 @@ export default class Knight extends Piece {
 		super({ ...options, icon: options.player.color === "dark" ? darkIcon : lightIcon, symbol: "N", value: 3 })
 	}
 	
-	public get moves(): Coordinates[] {
+	public getMoves(allowIllegal?: boolean): Coordinates[] {
 		const expanded: Coordinates[] = []
 		const [file, rank] = this.coordinates
 
 		for (let i of CHANGES) {
 			for (let j of CHANGES) {
 				if (Math.abs(i) === Math.abs(j)) continue
-				this.expandField([file + i, rank + j], expanded)
+				this.expandField([file + i, rank + j], expanded, allowIllegal)
 			}
 		}
 

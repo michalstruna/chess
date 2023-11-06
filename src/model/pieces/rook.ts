@@ -9,24 +9,24 @@ export default class Rook extends Piece {
 		super({ ...options, icon: options.player.color === "dark" ? darkIcon : lightIcon, symbol: "R", value: 5 })
 	}
 	
-	public get moves(): Coordinates[] {
+	public getMoves(allowIllegal?: boolean): Coordinates[] {
 		const expanded: Coordinates[] = []
 		const [file, rank] = this.coordinates
 
 		for (let i = 1; i < this.board.size - rank; i++) {
-			if (!this.expandField([file, rank + i], expanded)) break
+			if (!this.expandField([file, rank + i], expanded, allowIllegal)) break
 		}
 
 		for (let i = 1; i < this.board.size - file; i++) {
-			if (!this.expandField([file + i, rank], expanded)) break
+			if (!this.expandField([file + i, rank], expanded, allowIllegal)) break
 		}
 
 		for (let i = 1; i <= rank; i++) {
-			if (!this.expandField([file, rank - i], expanded)) break
+			if (!this.expandField([file, rank - i], expanded, allowIllegal)) break
 		}
 
 		for (let i = 1; i <= file; i++) {
-			if (!this.expandField([file - i, rank], expanded)) break
+			if (!this.expandField([file - i, rank], expanded, allowIllegal)) break
 		}
 
 		return expanded

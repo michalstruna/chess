@@ -1,4 +1,3 @@
-import { isSameCoordinates } from "@/utils/game";
 import { Coordinates } from "../../types/game";
 import Board from "../board";
 import Player from "../player";
@@ -45,38 +44,28 @@ export default abstract class Piece {
 		return this._isDirty
 	}
 
-	public remove(): void {
-		const [file, rank] = this.coordinates
-		this.board.matrix[file][rank] = null
-	}
-
 	public move(coordinates: Coordinates): void {
+		const [oldFile, oldRank] = this.coordinates
 		const [file, rank] = coordinates
-		this.board.matrix[file][rank]?.remove()
-		this.remove()
-		this._coordinates = coordinates
+		this.board.matrix[oldFile][oldRank] = null
 		this.board.matrix[file][rank] = this
+		this._coordinates = coordinates
 		this._isDirty = true
 	}
 
-	protected expandField (coordinates: Coordinates, expanded: Coordinates[], interaction: "any" | "attack" | "move" = "any"): boolean {
+	protected expandField (coordinates: Coordinates, expanded: Coordinates[], allowIllegal: boolean = false, interaction: "any" | "attack" | "move" = "any"): boolean {
 		if (!this.board.hasCoordinates(coordinates)) return false
 		const [file, rank] = coordinates
 		const piece = this.board.matrix[file][rank]
 		if (!piece && interaction === "attack") return false // Piece must attack other piece.
 		if (piece && interaction === "move") return false // Piece cań't attack other piece.
 		if (piece?.player === this.player) return false // User can't attack their own pieces.
+		if (!allowIllegal && !this.board.isLegalMove(this.coordinates, coordinates)) return false // Illegal move (own check).
 
-		// if (this.board.isLegalMove(this.coordinates, coordinates))
 		expanded.push(coordinates)
-
-		return true
+		return !piece
 	}
 
-	public canMove(coordinates: Coordinates): boolean {
-		return this.moves.some(move => isSameCoordinates(move, coordinates))
-	}
-
-	public abstract get moves(): Coordinates[]
+	public abstract getMoves(allowIllegal?: boolean): Coordinates[]
 
 }

@@ -2,7 +2,7 @@ import useBoardContext from "@/hooks/useBoardContext"
 import Piece from "@/model/pieces/piece"
 import { Coordinates } from "@/types/game"
 import { StylableProps } from "@/types/props"
-import { isSameCoordinates } from "@/utils/game"
+import { hasCoordinates, isSameCoordinates } from "@/utils/game"
 import { mergeProps } from "@/utils/props"
 import c from "classnames"
 import Image from "next/image"
@@ -16,20 +16,19 @@ export type FieldProps = StylableProps & {
 
 const Field = (props: FieldProps) => {
 	const { coordinates, piece } = props
-	const { highlights, setHighlights, selection, setSelection, currentPlayer, switchCurrentPlayer } = useBoardContext()
-	const id = `${coordinates[0]} ${coordinates[1]}`
-	const isHighlighted = highlights.includes(id)
+	const { highlights, setHighlights, selection, setSelection, currentPlayer, switchCurrentPlayer, selectionMoves } = useBoardContext()
+	const isHighlighted = hasCoordinates(highlights, coordinates)
 
 	const backgroundColor = (coordinates[0] + coordinates[1]) % 2 === 1 ? "#888" : "khaki"
 
 	const handleContextMenu = useCallback((e: MouseEvent<HTMLDivElement>) => {
 		e.preventDefault()
 		setSelection(null)
-		setHighlights(prev => prev.includes(id) ? prev.filter(it => it !== id) : [...prev, id]);
-	}, [id, setHighlights, setSelection])
+		setHighlights(prev => hasCoordinates(prev, coordinates) ? prev.filter(it => !isSameCoordinates(it, coordinates)) : [...prev, coordinates]);
+	}, [coordinates, setHighlights, setSelection])
 
 	const handleClick = useCallback(() => {
-		if (selection?.canMove(coordinates)) {
+		if (selection && selectionMoves.some(it => isSameCoordinates(it, coordinates))) {
 			selection.move(coordinates)
 			switchCurrentPlayer()
 			setSelection(null)
@@ -47,9 +46,9 @@ const Field = (props: FieldProps) => {
 		}
 
 		setHighlights([])
-	}, [coordinates, currentPlayer, piece, selection, setHighlights, setSelection, switchCurrentPlayer])
+	}, [coordinates, currentPlayer, piece, selection, selectionMoves, setHighlights, setSelection, switchCurrentPlayer])
 
-	const isMove = selection && selection.moves.some(move => isSameCoordinates(move, coordinates))
+	const isMove = selectionMoves.some(move => isSameCoordinates(move, coordinates))
 	const isCapture = isMove && piece
 
 	return (

@@ -1,4 +1,6 @@
+import { hasCoordinates } from "@/utils/game";
 import { Coordinates, Field } from "../types/game";
+import King from "./pieces/king";
 import Player from "./player";
 
 export type BoardOptions = {
@@ -9,7 +11,7 @@ export type BoardOptions = {
 type Matrix = Field[][]
 
 export default class Board {
-	
+
 	public readonly players: Player[]
 	public readonly matrix: Matrix
 	public readonly size: number
@@ -40,6 +42,35 @@ export default class Board {
 		})
 
 		return value
+	}
+
+	public isLegalMove(from: Coordinates, to: Coordinates): boolean {
+		let isValid = true
+
+		const [oldFile, oldRank] = from
+		const [newFile, newRank] = to
+		const fromPiece = this.matrix[oldFile][oldRank]
+		const toPiece = this.matrix[newFile][newRank]
+
+		this.matrix[newFile][newRank] = fromPiece
+		this.matrix[oldFile][oldRank] = null
+
+		const king = this.matrix.flat().find(field => field instanceof King && field.player === fromPiece?.player) as King
+		const kingCoordinates = king === fromPiece ? to : king.coordinates
+
+		for (const field of this.matrix.flat()) {
+			if (!field || field.player === king.player) continue
+
+			if (hasCoordinates(field.getMoves(true), kingCoordinates)) {
+				isValid = false
+				break
+			}
+		}	
+
+		this.matrix[newFile][newRank] = toPiece
+		this.matrix[oldFile][oldRank] = fromPiece
+
+		return isValid
 	}
 
 	private generateMatrix(): Matrix {
