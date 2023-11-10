@@ -4,6 +4,7 @@ import Field from "@/components/field"
 import { BoardContext, BoardContextData } from "@/hooks/useBoardContext"
 import BoardModel from "@/model/board"
 import Piece from "@/model/pieces/piece"
+import { Ai as AiModel } from "@/types/ai"
 import { Coordinates } from "@/types/game"
 import { useEffect, useState } from "react"
 import styles from "./board.module.scss"
@@ -11,11 +12,11 @@ import Evaluation from "./evaluation"
 
 export type BoardProps = {
 	model: BoardModel
-	withEval?: boolean
+	ai?: AiModel
 }
 
 const Board = (props: BoardProps) => {
-	const { model, withEval } = props
+	const { ai, model } = props
 
 	const [highlights, setHighlights] = useState<Coordinates[]>([])
 	const [selection, setSelection] = useState<Piece | null>(null)
@@ -66,7 +67,7 @@ const Board = (props: BoardProps) => {
 						})
 					))}
 				</div>
-				{withEval && <Evaluation value={model.evaluate()} direction={perspectivePlayer.direction} />}
+				{ai && <Evaluation value={ai.evaluate()} direction={perspectivePlayer.direction} />}
 			</div>
 		</BoardContext.Provider>
 	)

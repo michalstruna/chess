@@ -1,11 +1,12 @@
 import { hasCoordinates } from "@/utils/game";
-import { Coordinates, Field } from "../types/game";
+import { Coordinates, Field, Move } from "../types/game";
 import King from "./pieces/king";
 import Player from "./player";
 
 export type BoardOptions = {
 	players: Player[]
 	size: number
+	matrix?: Matrix
 }
 
 type Matrix = Field[][]
@@ -16,10 +17,10 @@ export default class Board {
 	public readonly matrix: Matrix
 	public readonly size: number
 
-	public constructor({ players, size }: BoardOptions) {
+	public constructor({ matrix, players, size }: BoardOptions) {
 		this.players = players
 		this.size = size
-		this.matrix = this.generateMatrix()
+		this.matrix = matrix ?? this.generateMatrix()
 	}
 
 	public hasCoordinates(coordinates: Coordinates): boolean {
@@ -71,6 +72,16 @@ export default class Board {
 		this.matrix[oldFile][oldRank] = fromPiece
 
 		return isValid
+	}
+
+	public move(move: Move) {
+		const { from: [fromFile, fromRank], to } = move
+		this.matrix[fromFile][fromRank]!.move(to)
+	}
+
+	public clone(): Board {
+		const matrix = this.matrix.map(field => field.slice())
+		return new Board({ players, matrix, size });
 	}
 
 	private generateMatrix(): Matrix {

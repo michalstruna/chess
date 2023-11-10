@@ -2,6 +2,7 @@
 
 import Board from "@/components/board";
 import BoardModel from "@/model/board";
+import Minimax from "@/model/minimax";
 import Bishop from "@/model/pieces/bishop";
 import King from "@/model/pieces/king";
 import Knight from "@/model/pieces/knight";
@@ -12,7 +13,7 @@ import Player from "@/model/player";
 import { useMemo } from "react";
 
 const Home = () => {
-	const { boardModel } = useMemo(() => {
+	const { aiModel, boardModel } = useMemo(() => {
 
 		const player1 = new Player({ color: "light", user: null })
 		const player2 = new Player({ color: "dark", user: null })
@@ -20,6 +21,11 @@ const Home = () => {
 		const board = new BoardModel({
 			players: [player2, player1],
 			size: 8
+		})
+
+		const ai = new Minimax({
+			board,
+			depth: 2
 		})
 
 		new Rook({ board, coordinates: [0, 0], player: player1 });
@@ -44,12 +50,14 @@ const Home = () => {
 			new Pawn({ board, coordinates: [i, 6], player: player2 })
 		}
 
-		return { boardModel: board }
+		ai.getBestMove();
+
+		return { aiModel: ai, boardModel: board }
 	}, [])
 
 	return (
 		<main>
-			<Board model={boardModel} withEval={true} />
+			<Board ai={aiModel} model={boardModel} />
 		</main>
 	)
 }
