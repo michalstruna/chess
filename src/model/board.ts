@@ -1,12 +1,22 @@
 import { hasCoordinates } from "@/utils/game";
-import { Coordinates, Field, Move } from "../types/game";
+import History from "@/utils/history";
+import { Coordinates, Field } from "../types/game";
 import King from "./pieces/king";
+import Piece from "./pieces/piece";
 import Player from "./player";
 
 export type BoardOptions = {
 	players: Player[]
 	size: number
 	matrix?: Matrix
+}
+
+export type BoardMove = {
+	from: Coordinates
+	to: Coordinates
+	piece: Piece
+	captured?: Piece
+	firstMove?: boolean
 }
 
 type Matrix = Field[][]
@@ -16,11 +26,13 @@ export default class Board {
 	public readonly players: Player[]
 	public readonly matrix: Matrix
 	public readonly size: number
+	private readonly _history: History<BoardMove>
 
 	public constructor({ matrix, players, size }: BoardOptions) {
 		this.players = players
 		this.size = size
 		this.matrix = matrix ?? this.generateMatrix()
+		this._history = new History() // Default history,
 	}
 
 	public hasCoordinates(coordinates: Coordinates): boolean {
@@ -74,14 +86,50 @@ export default class Board {
 		return isValid
 	}
 
-	public move(move: Move) {
-		const { from: [fromFile, fromRank], to } = move
-		this.matrix[fromFile][fromRank]!.move(to)
-	}
-
 	public clone(): Board {
 		const matrix = this.matrix.map(field => field.slice())
-		return new Board({ players, matrix, size });
+		return new Board({ players: this.players, matrix, size: this.size });
+	}
+
+	public move(piece: Piece, to: Coordinates) {
+		const [toFile, toRank] = to
+
+		if (piece.coordinates) {
+			this._history.push({ captured: this.matrix[toFile][toRank] || undefined, from: piece.coordinates, to, piece, firstMove: !piece.isDirty })
+			const [fromFile, fromRank] = piece.coordinates
+			this.matrix[fromFile][fromRank] = null
+		}
+
+		this.matrix[toFile][toRank] = piece
+		piece.coordinates = to
+		piece.isDirty = true
+	}
+
+	public get history() {
+		return this._history.toArray()
+	}
+
+	public undoMove() {
+		const { from, piece, to, captured, firstMove } = this._history.undo().changed // TODO: Refresh UI: onChange?
+		console.log({ from, piece, to, captured, firstMove })
+		
+		this.move(piece, from)
+		if (captured) this.move(captured, to)
+		if (firstMove) piece.isDirty = true
+	}
+
+	public redoMove() {
+		const { from, piece, to, captured } = this._history.redo().changed // TODO: Refresh UI: onChange?
+		this.move(piece, to)
+		if (captured) this.move(captured, from)
+	}
+
+	public canUndoMove(): boolean {
+		return this._history.canUndo()
+	}
+
+	public canRedoMove(): boolean {
+		return this._history.canRedo()
 	}
 
 	private generateMatrix(): Matrix {

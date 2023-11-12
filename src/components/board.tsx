@@ -1,12 +1,14 @@
 "use client"
 
 import Field from "@/components/field"
-import { BoardContext, BoardContextData } from "@/hooks/useBoardContext"
+import { BoardContext, BoardContextData } from "@/hooks/use-board-context"
+import useKeyboard, { UseKeyboardOptions } from "@/hooks/use-keyboard"
 import BoardModel from "@/model/board"
 import Piece from "@/model/pieces/piece"
 import { Ai as AiModel } from "@/types/ai"
 import { Coordinates } from "@/types/game"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
+import BoardHistory from "./board-history"
 import styles from "./board.module.scss"
 import Evaluation from "./evaluation"
 
@@ -42,6 +44,13 @@ const Board = (props: BoardProps) => {
 		setSelectionMoves(selection?.getMoves() ?? [])
 	}, [selection])
 
+	const keyboard: UseKeyboardOptions = useMemo(() => [
+		{ key: "ArrowLeft", handler: () => model.undoMove() },
+		{ key: "ArrowRight", handler: () => model.redoMove() },
+	], [model])
+
+	useKeyboard(keyboard)
+
 	return (
 		<BoardContext.Provider value={boardContext}>
 			<div className={styles.root}>
@@ -69,6 +78,7 @@ const Board = (props: BoardProps) => {
 				</div>
 				{ai && <Evaluation value={ai.evaluate()} direction={perspectivePlayer.direction} />}
 			</div>
+			<BoardHistory moves={model.history} />
 		</BoardContext.Provider>
 	)
 }

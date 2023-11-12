@@ -1,4 +1,4 @@
-import useBoardContext from "@/hooks/useBoardContext"
+import useBoardContext from "@/hooks/use-board-context"
 import Piece from "@/model/pieces/piece"
 import { Coordinates } from "@/types/game"
 import { StylableProps } from "@/types/props"

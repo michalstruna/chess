@@ -18,39 +18,26 @@ export type AbstractPieceOptions = PieceOptions & {
 export default abstract class Piece {
 
 	public readonly board: Board
-	private _coordinates: Coordinates
 	public readonly player: Player
 	public readonly symbol: string
 	public readonly icon: any
 	public readonly value: number
-	private _isDirty: boolean
+	public coordinates: Coordinates
+	public isDirty: boolean
 
 	public constructor({ board, coordinates, icon, player, symbol, isDirty = false, value }: AbstractPieceOptions) {
 		this.board = board
-		this._coordinates = coordinates
 		this.player = player
 		this.symbol = symbol
 		this.icon = icon
 		this.move(coordinates)
-		this._isDirty = isDirty
+		this.coordinates = coordinates
+		this.isDirty = isDirty
 		this.value = value
 	}
 
-	public get coordinates(): Coordinates {
-		return this._coordinates
-	}
-
-	public get isDirty(): boolean {
-		return this._isDirty
-	}
-
-	public move(coordinates: Coordinates): void {
-		const [oldFile, oldRank] = this.coordinates
-		const [file, rank] = coordinates
-		this.board.matrix[oldFile][oldRank] = null
-		this.board.matrix[file][rank] = this
-		this._coordinates = coordinates
-		this._isDirty = true
+	public move(to: Coordinates): void {
+		this.board.move(this, to)
 	}
 
 	protected expandField (coordinates: Coordinates, expanded: Coordinates[], allowIllegal: boolean = false, interaction: "any" | "attack" | "move" = "any"): boolean {

@@ -37,7 +37,7 @@ export default class King extends Piece {
 		return expanded
 	}
 
-	public move(coordinates: Coordinates): void {
+	/*public move(coordinates: Coordinates): void {
 		const [newFile] = coordinates
 		const [oldFile, oldRank] = this.coordinates
 
@@ -49,6 +49,6 @@ export default class King extends Piece {
 		}
 
 		super.move(coordinates)
-	}
+	}*/
 	
 }

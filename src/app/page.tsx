@@ -19,7 +19,7 @@ const Home = () => {
 		const player2 = new Player({ color: "dark", user: null })
 
 		const board = new BoardModel({
-			players: [player2, player1],
+			players: [player1, player2],
 			size: 8
 		})
 
