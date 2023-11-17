@@ -1,7 +1,9 @@
 .root {
 	background-color: dark-gray;
 	color: white;
-	display: flex;
+	display: grid;
 	flex-wrap: wrap;
 	gap: 0.5em;
+	grid-template-columns: 1fr 1fr;
+	width: 10rem;
 }

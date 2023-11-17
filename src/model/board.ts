@@ -19,6 +19,8 @@ export type BoardMove = {
 	piece: Piece
 	captured?: Piece
 	firstMove?: boolean
+	startTime: number
+	endTime: number
 }
 
 type Matrix = Field[][]
@@ -30,6 +32,7 @@ export default class Board {
 	public readonly size: number
 	private readonly _history: History<BoardMove>
 	private readonly onUpdate?: () => void
+	public readonly startTime: number
 
 	public constructor({ matrix, players, size, onUpdate }: BoardOptions) {
 		this.players = players
@@ -37,6 +40,7 @@ export default class Board {
 		this.matrix = matrix ?? this.generateMatrix()
 		this._history = new History() // Default history,
 		this.onUpdate = onUpdate
+		this.startTime = Date.now()
 	}
 
 	public hasCoordinates(coordinates: Coordinates): boolean {
@@ -104,10 +108,12 @@ export default class Board {
 			if (pushHistory) {
 				this._history.push({
 					captured,
+					endTime: Date.now(),
 					firstMove: !piece.isDirty,
 					from: piece.coordinates,
-					number: this._history.toArray().length,
+					number: this.history.length,
 					piece,
+					startTime: this.history[this.history.length - 1]?.endTime ?? this.startTime,
 					to
 				})
 			}
@@ -151,6 +157,10 @@ export default class Board {
 	public goTo(moveNumber: number): void {
 		const move = this.history[moveNumber]
 		if (!move) throw new Error("Invalid move number.")
+
+		for (let i = this.history.length - 1; i > moveNumber; i--) {
+			this.undoMove()
+		}
 	}
 
 	public get currentPlayer(): Player {
