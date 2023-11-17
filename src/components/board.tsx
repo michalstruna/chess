@@ -22,19 +22,15 @@ const Board = (props: BoardProps) => {
 
 	const [highlights, setHighlights] = useState<Coordinates[]>([])
 	const [selection, setSelection] = useState<Piece | null>(null)
-	const [currentPlayer, setCurrentPlayer] = useState(model.players[0])
 	const [perspectivePlayer, setPerspectivePlayer] = useState(model.players[0])
 	const [selectionMoves, setSelectionMoves] = useState<Coordinates[]>([]) // TODO: Cache inside each piece?
 
-	const switchCurrentPlayer = () => setCurrentPlayer(prev => prev === model.players[0] ? model.players[1] : model.players[0])
-
 	const boardContext: BoardContextData = {
 		highlights,
+		model,
 		setHighlights,
 		selection,
 		setSelection,
-		currentPlayer,
-		switchCurrentPlayer,
 		perspectivePlayer,
 		setPerspectivePlayer,
 		selectionMoves
@@ -45,8 +41,8 @@ const Board = (props: BoardProps) => {
 	}, [selection])
 
 	const keyboard: UseKeyboardOptions = useMemo(() => [
-		{ key: "ArrowLeft", handler: () => model.undoMove() },
-		{ key: "ArrowRight", handler: () => model.redoMove() },
+		{ key: "ArrowLeft", handler: () => model.canUndoMove() && model.undoMove() },
+		{ key: "ArrowRight", handler: () => model.canRedoMove() && model.redoMove() },
 	], [model])
 
 	useKeyboard(keyboard)
@@ -66,7 +62,7 @@ const Board = (props: BoardProps) => {
 								<Field
 									key={index}
 									style={{
-										gridColumn: perspectivePlayer.direction === 1 ? (model.size - file) : file + 1,
+										gridColumn: perspectivePlayer.direction === 1 ? file + 1 : (model.size - file),
 										gridRow: perspectivePlayer.direction === 1 ? (model.size - rank) : rank + 1,
 									}}
 									coordinates={[file, rank]}

@@ -1,6 +1,7 @@
 "use client"
 
 import Board from "@/components/board";
+import useForceUpdate from "@/hooks/use-force-update";
 import BoardModel from "@/model/board";
 import Minimax from "@/model/minimax";
 import Bishop from "@/model/pieces/bishop";
@@ -13,12 +14,15 @@ import Player from "@/model/player";
 import { useMemo } from "react";
 
 const Home = () => {
+	const forceUpdate = useForceUpdate()
+
 	const { aiModel, boardModel } = useMemo(() => {
 
 		const player1 = new Player({ color: "light", user: null })
 		const player2 = new Player({ color: "dark", user: null })
 
 		const board = new BoardModel({
+			onUpdate: forceUpdate,
 			players: [player1, player2],
 			size: 8
 		})
@@ -53,6 +57,7 @@ const Home = () => {
 		ai.getBestMove();
 
 		return { aiModel: ai, boardModel: board }
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
 	return (

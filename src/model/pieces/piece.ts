@@ -22,7 +22,7 @@ export default abstract class Piece {
 	public readonly symbol: string
 	public readonly icon: any
 	public readonly value: number
-	public coordinates: Coordinates
+	public coordinates?: Coordinates
 	public isDirty: boolean
 
 	public constructor({ board, coordinates, icon, player, symbol, isDirty = false, value }: AbstractPieceOptions) {
@@ -47,7 +47,7 @@ export default abstract class Piece {
 		if (!piece && interaction === "attack") return false // Piece must attack other piece.
 		if (piece && interaction === "move") return false // Piece cań't attack other piece.
 		if (piece?.player === this.player) return false // User can't attack their own pieces.
-		if (!allowIllegal && !this.board.isLegalMove(this.coordinates, coordinates)) return false // Illegal move (own check).
+		if (!allowIllegal && !this.board.isLegalMove(this.coordinates!, coordinates)) return false // Illegal move (own check).
 
 		expanded.push(coordinates)
 		return !piece

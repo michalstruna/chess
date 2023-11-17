@@ -1,3 +1,4 @@
+import BoardModel from "@/model/board";
 import PieceModel from "@/model/pieces/piece";
 import Player from "@/model/player";
 import { Coordinates } from "@/types/game";
@@ -10,10 +11,9 @@ export type BoardContextData = {
 	selection: PieceModel | null
 	setSelection: Setter<PieceModel | null>
 	perspectivePlayer: Player
-	switchCurrentPlayer: () => void
-	currentPlayer: Player
 	setPerspectivePlayer: Setter<Player>
 	selectionMoves: Coordinates[]
+	model: BoardModel
 }
 
 export const BoardContext = createContext<BoardContextData>({} as unknown as BoardContextData)

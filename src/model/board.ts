@@ -9,9 +9,11 @@ export type BoardOptions = {
 	players: Player[]
 	size: number
 	matrix?: Matrix
+	onUpdate?: () => void
 }
 
 export type BoardMove = {
+	number: number
 	from: Coordinates
 	to: Coordinates
 	piece: Piece
@@ -27,12 +29,14 @@ export default class Board {
 	public readonly matrix: Matrix
 	public readonly size: number
 	private readonly _history: History<BoardMove>
+	private readonly onUpdate?: () => void
 
-	public constructor({ matrix, players, size }: BoardOptions) {
+	public constructor({ matrix, players, size, onUpdate }: BoardOptions) {
 		this.players = players
 		this.size = size
 		this.matrix = matrix ?? this.generateMatrix()
 		this._history = new History() // Default history,
+		this.onUpdate = onUpdate
 	}
 
 	public hasCoordinates(coordinates: Coordinates): boolean {
@@ -74,7 +78,7 @@ export default class Board {
 		for (const field of this.matrix.flat()) {
 			if (!field || field.player === king.player) continue
 
-			if (hasCoordinates(field.getMoves(true), kingCoordinates)) {
+			if (hasCoordinates(field.getMoves(true), kingCoordinates!)) {
 				isValid = false
 				break
 			}
@@ -91,11 +95,24 @@ export default class Board {
 		return new Board({ players: this.players, matrix, size: this.size });
 	}
 
-	public move(piece: Piece, to: Coordinates) {
+	public move(piece: Piece, to: Coordinates, pushHistory: boolean = true) {
 		const [toFile, toRank] = to
 
 		if (piece.coordinates) {
-			this._history.push({ captured: this.matrix[toFile][toRank] || undefined, from: piece.coordinates, to, piece, firstMove: !piece.isDirty })
+			const captured = this.matrix[toFile][toRank] || undefined
+
+			if (pushHistory) {
+				this._history.push({
+					captured,
+					firstMove: !piece.isDirty,
+					from: piece.coordinates,
+					number: this._history.toArray().length,
+					piece,
+					to
+				})
+			}
+
+			if (captured) captured.coordinates = undefined
 			const [fromFile, fromRank] = piece.coordinates
 			this.matrix[fromFile][fromRank] = null
 		}
@@ -103,6 +120,8 @@ export default class Board {
 		this.matrix[toFile][toRank] = piece
 		piece.coordinates = to
 		piece.isDirty = true
+
+		this.onUpdate?.()
 	}
 
 	public get history() {
@@ -110,18 +129,15 @@ export default class Board {
 	}
 
 	public undoMove() {
-		const { from, piece, to, captured, firstMove } = this._history.undo().changed // TODO: Refresh UI: onChange?
-		console.log({ from, piece, to, captured, firstMove })
-		
-		this.move(piece, from)
-		if (captured) this.move(captured, to)
-		if (firstMove) piece.isDirty = true
+		const { from, piece, to, captured, firstMove } = this._history.undo().changed
+		this.move(piece, from, false)
+		if (captured) this.move(captured, to, false)
+		if (firstMove) piece.isDirty = false
 	}
 
 	public redoMove() {
-		const { from, piece, to, captured } = this._history.redo().changed // TODO: Refresh UI: onChange?
-		this.move(piece, to)
-		if (captured) this.move(captured, from)
+		const { from, piece, to } = this._history.redo().changed
+		this.move(piece, to, false)
 	}
 
 	public canUndoMove(): boolean {
@@ -130,6 +146,15 @@ export default class Board {
 
 	public canRedoMove(): boolean {
 		return this._history.canRedo()
+	}
+
+	public goTo(moveNumber: number): void {
+		const move = this.history[moveNumber]
+		if (!move) throw new Error("Invalid move number.")
+	}
+
+	public get currentPlayer(): Player {
+		return this.players[this.history.length % 2]
 	}
 
 	private generateMatrix(): Matrix {
